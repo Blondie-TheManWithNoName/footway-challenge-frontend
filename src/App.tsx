@@ -6,6 +6,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { usePhysicalProduct } from "./hooks/usePhysicalProduct";
 import { useEffect, useState } from "react";
 import { useDigitalProduct } from "./hooks/useDigitalProduct";
+import { useMappings } from "./hooks/useMappings";
 
 function App() {
   const {
@@ -13,6 +14,9 @@ function App() {
     isLoading: isPhysicalProductsLoading,
     getPhysicalProducts,
   } = usePhysicalProduct();
+
+  const { mappings, getMappings, editMapping, createMapping, deleteMapping } =
+    useMappings();
   const {
     digitalProducts,
     isLoading: isDigitalProductsLoading,
@@ -49,6 +53,11 @@ function App() {
                     sku={digitalProduct.sku}
                     name={digitalProduct.name}
                     ean={digitalProduct.ean}
+                    mappings={mappings}
+                    getMappings={getMappings}
+                    editMapping={editMapping}
+                    createMapping={createMapping}
+                    deleteMapping={deleteMapping}
                     userMapping={userMapping}
                     setUserMapping={setUserMapping}
                     digital={true}
@@ -72,8 +81,12 @@ function App() {
                     key={physicalProduct.sku}
                     sku={physicalProduct.sku}
                     name={physicalProduct.name}
-                    mappings={physicalProduct.mappings}
+                    mappings={mappings}
                     ean={physicalProduct.ean}
+                    getMappings={getMappings}
+                    editMapping={editMapping}
+                    createMapping={createMapping}
+                    deleteMapping={deleteMapping}
                     userMapping={userMapping}
                     setUserMapping={setUserMapping}
                     digital={false}
@@ -85,7 +98,6 @@ function App() {
         </section>
       </div>
 
-      {/* For smaller screens */}
       <div className="md:hidden flex flex-col items-center w-full">
         <Tabs defaultValue="account" className="max-w-xl w-full">
           <TabsList className="w-full">

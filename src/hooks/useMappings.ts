@@ -8,16 +8,16 @@ export const useMappings = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown | null>(null);
 
-  const getMappings = async () => {
-    // try {
-    //   const response = await fetch(`${baseURL}/api/physical-products`);
-    //   const data = await response.json();
-    //   setPhysicalProducts(data);
-    //   setIsLoading(false);
-    // } catch (error) {
-    //   setError(error);
-    //   setIsLoading(false);
-    // }
+  const getMappings = async (sku: string) => {
+    try {
+      const response = await fetch(
+        `${baseURL}/mappings?${"digitalSku=" + sku}`
+      );
+      const data = await response.json();
+      setMappings(data);
+    } catch (error) {
+      setError(error);
+    }
   };
 
   const getMapping = async (sku: string) => {

@@ -29,7 +29,6 @@ import {
 
 import { usePhysicalProduct } from "@/hooks/usePhysicalProduct";
 import ProductForm from "./ProductForm";
-import { useMappings } from "@/hooks/useMappings";
 
 export default function ProductPreview({
   name,
@@ -39,11 +38,14 @@ export default function ProductPreview({
   userMapping,
   setUserMapping,
   digital,
+  getMappings,
+  editMapping,
+  createMapping,
+  deleteMapping,
 }: any) {
   const [edit, setEdit] = React.useState(false);
   const [mapped, setMapped] = useState<number>(0);
-  const { mapping, getMapping, editMapping, createMapping, deleteMapping } =
-    useMappings();
+
   const { physicalProduct, getPhysicalProduct, editPhysicalProduct } =
     usePhysicalProduct();
 
@@ -52,18 +54,21 @@ export default function ProductPreview({
   }
 
   useEffect(() => {
-    if (!digital) {
-      const mapped = mappings.find(
-        (mapping) => mapping.physicalProductSku === userMapping
-      );
-      if (mapped) setMapped(mapped.id);
-      else setMapped(0);
+    if (!userMapping) setMapped(0);
+    else {
+      if (!digital && mappings) {
+        const mapped = mappings.find(
+          (mapping) => mapping.physicalProductSku === sku
+        );
+        if (mapped) setMapped(mapped.id);
+        else setMapped(0);
+      }
     }
   }, [userMapping]);
 
   async function handleMapClick(event: React.MouseEvent<HTMLButtonElement>) {
-    // getMapping(sku);
     if (digital) {
+      await getMappings(sku);
       setUserMapping(userMapping ? undefined : sku);
     } else {
       if (userMapping) {
