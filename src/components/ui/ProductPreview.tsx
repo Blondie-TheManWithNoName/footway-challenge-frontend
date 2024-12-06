@@ -69,7 +69,7 @@ export default function ProductPreview({
   async function handleMapClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (digital) {
       await getMappings(sku);
-      setUserMapping(userMapping ? undefined : sku);
+      setUserMapping(userMapping ? undefined : { sku: sku, ean: ean });
     } else {
       if (userMapping) {
         if (mapped !== 0) {
@@ -78,7 +78,7 @@ export default function ProductPreview({
         } else {
           const id = await createMapping({
             physicalProductSku: sku,
-            digitalProductSku: userMapping,
+            digitalProductSku: userMapping.sku,
           });
           setMapped(id);
         }
@@ -87,13 +87,15 @@ export default function ProductPreview({
   }
   return (
     <div
-      className={`grid grid-cols-[25%_50%_25%] ${
-        mapped
-          ? "bg-[#93ffa3]"
-          : userMapping === sku && digital
-          ? "bg-[#75aaff]"
-          : "bg-[#FFFFFF]"
-      } rounded-xl pt-2 pb-4 px-4 shadow border overflow-hidden mt-8`}
+      className={`grid grid-cols-[25%_50%_25%]
+        transition-all duration-200 cubic-bezier(0, 0.55, 0.45, 1)
+        ${
+          mapped
+            ? "bg-[#93ffa3]"
+            : userMapping?.sku === sku && digital
+            ? "bg-[#75aaff]"
+            : "bg-[#FFFFFF]"
+        } rounded-xl pt-2 pb-4 px-4 shadow border overflow-hidden mt-8`}
     >
       <img
         src="./shoes.jpg"
@@ -208,7 +210,9 @@ export default function ProductPreview({
                 onClick={handleMapClick}
                 disabled={
                   (!userMapping && !digital) ||
-                  (userMapping !== undefined && userMapping !== sku && digital)
+                  (userMapping !== undefined &&
+                    userMapping.sku !== sku &&
+                    digital)
                 }
               >
                 {digital ? (

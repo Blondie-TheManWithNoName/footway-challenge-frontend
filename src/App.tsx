@@ -13,16 +13,26 @@ function App() {
     physicalProducts,
     isLoading: isPhysicalProductsLoading,
     getPhysicalProducts,
+    getRecomendation,
+    recomendation,
+    setRecomendation,
   } = usePhysicalProduct();
 
   const { mappings, getMappings, editMapping, createMapping, deleteMapping } =
     useMappings();
+
   const {
     digitalProducts,
     isLoading: isDigitalProductsLoading,
     getDigitalProducts,
   } = useDigitalProduct();
-  const [userMapping, setUserMapping] = useState<string | undefined>(undefined);
+  const [userMapping, setUserMapping] = useState<any | undefined>(undefined);
+
+  useEffect(() => {
+    if (userMapping) {
+      getRecomendation(userMapping.ean);
+    } else setRecomendation(undefined);
+  }, [userMapping]);
 
   const [search, setSearch] = useState<string>("");
   useEffect(() => {
@@ -42,6 +52,7 @@ function App() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
           <ScrollArea className="h-[75vh] max-w-sm overflow-y-auto rounded-md border-0 mt-[2vh]">
             <div className="w-full px-4">
               {isDigitalProductsLoading ? (
@@ -71,6 +82,29 @@ function App() {
         <section className="flex flex-col items-center">
           <h2 className="text-xl font-medium">Physical Products</h2>
           <Input className="max-w-sm mt-[5vh]" placeholder="Search" />
+
+          {recomendation ? (
+            <>
+              <div className="max-w-sm mt-[2vh] bg-blue-400  rounded-xl p-4">
+                <h3 className="text-xl font-medium">Recomendation</h3>
+
+                <ProductPreview
+                  key={recomendation.sku}
+                  sku={recomendation.sku}
+                  name={recomendation.name}
+                  mappings={mappings}
+                  ean={recomendation.ean}
+                  getMappings={getMappings}
+                  editMapping={editMapping}
+                  createMapping={createMapping}
+                  deleteMapping={deleteMapping}
+                  userMapping={userMapping}
+                  setUserMapping={setUserMapping}
+                  digital={false}
+                />
+              </div>
+            </>
+          ) : null}
           <ScrollArea className="h-[75vh] max-w-sm overflow-y-auto rounded-md border-0 mt-[2vh]">
             <div className="w-full px-4">
               {isPhysicalProductsLoading ? (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { set } from "zod";
 
 const baseURL = "http://localhost:8080";
 
@@ -7,6 +8,7 @@ export const usePhysicalProduct = () => {
   const [physicalProduct, setPhysicalProduct] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown | null>(null);
+  const [recomendation, setRecomendation] = useState<any>();
 
   const getPhysicalProducts = async (
     page: number | undefined,
@@ -20,7 +22,6 @@ export const usePhysicalProduct = () => {
         }&${"search=" + search}`
       );
       const data = await response.json();
-      console.log(data);
       setPhysicalProducts(data.content);
       setIsLoading(false);
     } catch (error) {
@@ -39,6 +40,17 @@ export const usePhysicalProduct = () => {
     }
   };
 
+  const getRecomendation = async (ean: string) => {
+    try {
+      const response = await fetch(`${baseURL}/physical-products/ean/${ean}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        setRecomendation(data);
+      }
+    } catch (error) {
+      setError(error);
+    }
+  };
   const editPhysicalProduct = async (id: string, data: Object) => {
     try {
       const response = await fetch(`${baseURL}/physical-products/${id}`, {
@@ -58,10 +70,13 @@ export const usePhysicalProduct = () => {
   return {
     physicalProducts,
     physicalProduct,
+    recomendation,
+    setRecomendation,
     isLoading,
     error,
     getPhysicalProducts,
     getPhysicalProduct,
     editPhysicalProduct,
+    getRecomendation,
   };
 };
