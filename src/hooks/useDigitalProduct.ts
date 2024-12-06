@@ -20,7 +20,6 @@ export const useDigitalProduct = () => {
         }&${"search=" + search}`
       );
       const data = await response.json();
-      console.log(data);
       setDigitalProducts(data.content);
       setIsLoading(false);
     } catch (error) {

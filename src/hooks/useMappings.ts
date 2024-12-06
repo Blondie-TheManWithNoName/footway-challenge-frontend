@@ -48,7 +48,6 @@ export const useMappings = () => {
 
   const createMapping = async (data: Object) => {
     try {
-      console.log("data", data);
       const response = await fetch(`${baseURL}/mappings`, {
         method: "POST",
         headers: {
@@ -56,11 +55,9 @@ export const useMappings = () => {
         },
         body: JSON.stringify(data),
       });
-      console.log("response", response);
       const responseData = await response.json();
       return responseData.id;
     } catch (error) {
-      console.log("error", error);
       setError(error);
     }
   };
