@@ -5,8 +5,6 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { usePhysicalProduct } from "./hooks/usePhysicalProduct";
 import { useEffect, useRef, useState } from "react";
 import { useMappingsContext } from "./contexts/MappingContext";
-import { set } from "zod";
-import { MoveHorizontal } from "lucide-react";
 import { useDigitalProduct } from "./hooks/useDigitalProduct";
 export default function Mapping() {
   // Mapping Context
@@ -71,7 +69,10 @@ export default function Mapping() {
           className="max-w-[25rem] mt-[1vh]"
           placeholder="Search"
           value={searchDigital}
-          onChange={(e) => setSearchDigital(e.target.value)}
+          onChange={(e) => {
+            setSearchDigital(e.target.value);
+            setDigitalPage(1);
+          }}
         />
 
         <ScrollArea
