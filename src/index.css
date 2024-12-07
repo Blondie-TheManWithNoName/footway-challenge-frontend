@@ -92,7 +92,6 @@ button:focus-visible {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
   background-color: transparent;
   z-index: 10;
 }
@@ -100,13 +99,12 @@ button:focus-visible {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background-color: #c2c6d0;
-  border-radius: 3px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background-color: #c2c6d0;
 }
-.carousell {
+/* .carousell {
   transition: all 500ms cubic-bezier(0.83, 0, 0.17, 1);
-}
+} */
