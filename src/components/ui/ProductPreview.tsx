@@ -1,110 +1,36 @@
-import React, { useEffect, useState } from "react";
-import {
-  Cable,
-  Check,
-  ChevronsLeftRightEllipsis,
-  Info,
-  MoveHorizontal,
-  X,
-} from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
-import { Button } from "./button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import { usePhysicalProduct } from "@/hooks/usePhysicalProduct";
-import ProductForm from "./ProductForm";
+import ProductInfo from "./ProductInfo";
+import ProductMapDigital from "./ProductMapDigital";
+import ProductMapPhysical from "./ProductMapPhysical";
+import { ProductPreviewInterface } from "@/interfaces/ProductPreview";
 
 export default function ProductPreview({
-  name,
-  sku,
-  ean,
-  mappings,
-  userMapping,
-  setUserMapping,
+  productInfo,
   digital,
-  getMappings,
-  editMapping,
-  createMapping,
-  deleteMapping,
-}: any) {
-  const [edit, setEdit] = React.useState(false);
-  const [mapped, setMapped] = useState<number>(0);
+}: {
+  productInfo: ProductPreviewInterface;
+  digital: boolean;
+}) {
+  const [color, setColor] = useState<string>("bg-transparent");
+  const { name, sku, ean, image } = productInfo;
 
-  const { physicalProduct, getPhysicalProduct, editPhysicalProduct } =
-    usePhysicalProduct();
-
-  function handleInfoClick(event: React.MouseEvent<HTMLButtonElement>) {
-    getPhysicalProduct(sku);
-  }
-
-  useEffect(() => {
-    if (!userMapping) setMapped(0);
-    else {
-      if (!digital && mappings) {
-        const mapped = mappings.find(
-          (mapping) => mapping.physicalProductSku === sku
-        );
-        if (mapped) setMapped(mapped.id);
-        else setMapped(0);
-      }
-    }
-  }, [userMapping]);
-
-  async function handleMapClick(event: React.MouseEvent<HTMLButtonElement>) {
-    if (digital) {
-      await getMappings(sku);
-      setUserMapping(userMapping ? undefined : { sku: sku, ean: ean });
-    } else {
-      if (userMapping) {
-        if (mapped !== 0) {
-          deleteMapping(mapped);
-          setMapped(0);
-        } else {
-          const id = await createMapping({
-            physicalProductSku: sku,
-            digitalProductSku: userMapping.sku,
-          });
-          setMapped(id);
-        }
-      }
-    }
-  }
   return (
     <div
-      className={`grid grid-cols-[25%_50%_25%]
-        transition-all duration-200 cubic-bezier(0, 0.55, 0.45, 1)
-        ${
-          mapped
-            ? "bg-[#93ffa3]"
-            : userMapping?.sku === sku && digital
-            ? "bg-[#75aaff]"
-            : "bg-[#FFFFFF]"
-        } rounded-xl pt-2 pb-4 px-4 shadow border overflow-hidden mt-8`}
+      // transition-all duration-50 cubic-bezier(0.22, 1, 0.36, 1)
+      className={`grid grid-cols-[21%_55%_20%] gap-x-[2%] 
+        outline outline-[2px]
+         pt-2 pb-2 px-2 overflow-hidden mt-3 relative
+        ${color}`}
     >
       <img
-        src="./shoes.jpg"
+        src={image ?? "fallback.jpg"}
         alt="shoes"
-        className="w-full aspect-square rounded-lg mt-2"
+        className="w-full aspect-square"
       />
-      <div className="flex flex-col ml-2 mt-1 justify-between pb-2">
+      <div className="flex flex-col justify-between pb-0 relative">
         <h3 className="text-md font-medium leading-tight">{name}</h3>
-        <div className="mt-2.5 grid grid-rows-2 gap-y-1 w-full">
+        <div className="mt-2.5 grid grid-rows-2 gap-y-2 w-full py-2">
           <p className="text-sm tracking-wide leading-none">
             <span className="font-medium">SKU: </span>
             {sku}
@@ -115,120 +41,13 @@ export default function ProductPreview({
           </p>
         </div>
       </div>
-      <div className="flex flex-col relative justify-between items-center py-1.5 gap-y-2 px-2">
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="w-full h-full">
-              <TooltipProvider delayDuration={50}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full h-full"
-                      onClick={handleInfoClick}
-                    >
-                      <Info stroke="#1a1a1a" strokeWidth={1.5} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>More Info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="p-8 px-12">
-            <DialogHeader className="space-y-4">
-              {edit ? (
-                <>Edit</>
-              ) : (
-                <>
-                  <DialogTitle className="text-xl font-medium flex flex-row justify-between pr-10 mt-2">
-                    <span>{physicalProduct?.name}</span>
-                    <span>$ {physicalProduct?.price}</span>
-                  </DialogTitle>
-                  <DialogDescription>
-                    {physicalProduct?.description}
-                  </DialogDescription>
-                </>
-              )}
-            </DialogHeader>
-            {edit ? (
-              <ProductForm
-                product={physicalProduct}
-                setEdit={setEdit}
-                editPhysicalProduct={editPhysicalProduct}
-              />
-            ) : (
-              <div className="grid grid-cols-2 gap-x-10 gap-y-5 mb-10 mt-5">
-                <div className="flex flex-col">
-                  <Label htmlFor="sku">SKU</Label>
-                  <p>{physicalProduct?.sku}</p>
-                </div>
-                <div className="flex flex-col">
-                  <Label htmlFor="ean">EAN</Label>
-                  <p>{physicalProduct?.ean}</p>
-                </div>
-                <div className="flex flex-col">
-                  <Label htmlFor="color">Color</Label>
-                  <p>{physicalProduct?.color}</p>
-                </div>
-                <div className="flex flex-col">
-                  <Label htmlFor="size">Size</Label>
-                  <p>{physicalProduct?.size}</p>
-                </div>
-              </div>
-            )}
-            <DialogFooter className="">
-              {edit ? (
-                <></>
-              ) : (
-                <div className="flex flex-row sm:justify-between w-full">
-                  <Button
-                    variant="outline"
-                    onClick={
-                      () => setEdit(true)
-                      // editPhysicalProduct(physicalProduct.sku, {
-                      //   physicalProduct,
-                      // })
-                    }
-                  >
-                    Edit
-                  </Button>
-                </div>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <TooltipProvider delayDuration={50}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="default"
-                className="w-full h-full"
-                onClick={handleMapClick}
-                disabled={
-                  (!userMapping && !digital) ||
-                  (userMapping !== undefined &&
-                    userMapping.sku !== sku &&
-                    digital)
-                }
-              >
-                {digital ? (
-                  <MoveHorizontal stroke="#FFFFFF" strokeWidth={1.5} />
-                ) : mapped ? (
-                  <X stroke="#FFFFFF" strokeWidth={1.5} />
-                ) : userMapping ? (
-                  <Check stroke="#FFFFFF" strokeWidth={1.5} />
-                ) : undefined}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p>Map Prodcut</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <div className="grid grid-rows-[41%_44%] relative items-center gap-y-[15%]">
+        <ProductInfo sku={sku} />
+        {digital ? (
+          <ProductMapDigital sku={sku} ean={ean} setColor={setColor} />
+        ) : (
+          <ProductMapPhysical sku={sku} setColor={setColor} />
+        )}
       </div>
     </div>
   );
