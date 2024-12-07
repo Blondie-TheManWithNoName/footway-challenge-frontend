@@ -28,15 +28,13 @@ import {
 } from "@/components/ui/dialog";
 
 import ProductForm from "./ProductForm";
-import { usePhysicalProduct } from "@/hooks/usePhysicalProduct";
-export default function ProductInfo({ sku }: any) {
+export default function ProductInfo({
+  sku,
+  product,
+  getProduct,
+  editProduct,
+}: any) {
   const [edit, setEdit] = React.useState(false);
-  const { physicalProduct, getPhysicalProduct, editPhysicalProduct } =
-    usePhysicalProduct();
-
-  function handleInfoClick() {
-    getPhysicalProduct(sku);
-  }
 
   return (
     <Dialog>
@@ -48,7 +46,7 @@ export default function ProductInfo({ sku }: any) {
                 <Button
                   variant="outline"
                   className="w-full h-full"
-                  onClick={handleInfoClick}
+                  onClick={() => getProduct(sku)}
                 >
                   <Info stroke="#1a1a1a" strokeWidth={1.5} />
                 </Button>
@@ -67,38 +65,36 @@ export default function ProductInfo({ sku }: any) {
           ) : (
             <>
               <DialogTitle className="text-xl font-medium flex flex-row justify-between pr-10 mt-2">
-                <span>{physicalProduct?.name}</span>
-                <span>$ {physicalProduct?.price}</span>
+                <span>{product?.name}</span>
+                <span>$ {product?.price}</span>
               </DialogTitle>
-              <DialogDescription>
-                {physicalProduct?.description}
-              </DialogDescription>
+              <DialogDescription>{product?.description}</DialogDescription>
             </>
           )}
         </DialogHeader>
         {edit ? (
           <ProductForm
-            product={physicalProduct}
+            product={product}
             setEdit={setEdit}
-            editPhysicalProduct={editPhysicalProduct}
+            editProduct={editProduct}
           />
         ) : (
           <div className="grid grid-cols-2 gap-x-10 gap-y-5 mb-10 mt-5">
             <div className="flex flex-col">
               <Label htmlFor="sku">SKU</Label>
-              <p>{physicalProduct?.sku}</p>
+              <p>{product?.sku}</p>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="ean">EAN</Label>
-              <p>{physicalProduct?.ean}</p>
+              <p>{product?.ean}</p>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="color">Color</Label>
-              <p>{physicalProduct?.color}</p>
+              <p>{product?.color}</p>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="size">Size</Label>
-              <p>{physicalProduct?.size}</p>
+              <p>{product?.size}</p>
             </div>
           </div>
         )}

@@ -66,11 +66,11 @@ const formSchema = z.object({
 export default function ProductForm({
   product,
   setEdit,
-  editPhysicalProduct,
+  editProduct,
 }: {
   product: any;
   setEdit: any;
-  editPhysicalProduct: any;
+  editProduct: any;
 }) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -87,7 +87,7 @@ export default function ProductForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await editPhysicalProduct(product.sku, values);
+    await editProduct(product.sku, values);
     setEdit(false);
   }
   return (

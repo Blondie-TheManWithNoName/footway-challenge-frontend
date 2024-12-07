@@ -3,7 +3,9 @@ import { useState } from "react";
 import ProductInfo from "./ProductInfo";
 import ProductMapDigital from "./ProductMapDigital";
 import ProductMapPhysical from "./ProductMapPhysical";
-import { ProductPreviewInterface } from "@/interfaces/ProductPreview";
+import { ProductPreviewInterface } from "@/interfaces/ProductPreviewInterface";
+import { usePhysicalProduct } from "@/hooks/usePhysicalProduct";
+import { useDigitalProduct } from "@/hooks/useDigitalProduct";
 
 export default function ProductPreview({
   productInfo,
@@ -14,6 +16,12 @@ export default function ProductPreview({
 }) {
   const [color, setColor] = useState<string>("bg-transparent");
   const { name, sku, ean, image } = productInfo;
+
+  const { physicalProduct, getPhysicalProduct, editPhysicalProduct } =
+    usePhysicalProduct();
+
+  const { digitalProduct, getDigitalProduct, editDigitalProduct } =
+    useDigitalProduct();
 
   return (
     <div
@@ -42,7 +50,12 @@ export default function ProductPreview({
         </div>
       </div>
       <div className="grid grid-rows-[41%_44%] relative items-center gap-y-[15%]">
-        <ProductInfo sku={sku} />
+        <ProductInfo
+          sku={sku}
+          product={digital ? digitalProduct : physicalProduct}
+          getProduct={digital ? getDigitalProduct : getPhysicalProduct}
+          editProduct={digital ? editDigitalProduct : editPhysicalProduct}
+        />
         {digital ? (
           <ProductMapDigital sku={sku} ean={ean} setColor={setColor} />
         ) : (
