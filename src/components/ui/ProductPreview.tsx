@@ -39,11 +39,11 @@ export default function ProductPreview({
       <div className="flex flex-col justify-between pb-0 relative">
         <h3 className="text-md font-medium leading-tight">{name}</h3>
         <div className="mt-2.5 grid grid-rows-2 gap-y-2 w-full py-2">
-          <p className="text-sm tracking-wide leading-none">
+          <p className="text-sm tracking-wide leading-none  font-mono">
             <span className="font-medium">SKU: </span>
             {sku}
           </p>
-          <p className="text-sm tracking-wide leading-none">
+          <p className="text-sm tracking-wide leading-none font-mono">
             <span className="font-medium">EAN: </span>
             {ean}
           </p>

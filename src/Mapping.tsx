@@ -3,11 +3,11 @@ import { Input } from "@/components/ui/input";
 import ProductPreview from "./components/ui/ProductPreview";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { usePhysicalProduct } from "./hooks/usePhysicalProduct";
-import { useEffect, useState } from "react";
-import { useDigitalProduct } from "./hooks/useDigitalProduct";
+import { useEffect, useRef, useState } from "react";
 import { useMappingsContext } from "./contexts/MappingContext";
 import { set } from "zod";
 import { MoveHorizontal } from "lucide-react";
+import { useDigitalProduct } from "./hooks/useDigitalProduct";
 export default function Mapping() {
   // Mapping Context
   const { userMapping } = useMappingsContext();
@@ -36,20 +36,36 @@ export default function Mapping() {
   const [searchDigital, setSearchDigital] = useState<string>("");
   const [searchPhysical, setSearchPhysical] = useState<string>("");
 
+  const [digitalPage, setDigitalPage] = useState<number>(1);
+  const [physicalPage, setPhysicalPage] = useState<number>(1);
+
+  const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
+
+  const sectionRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
-    getDigitalProducts(1, 10, searchDigital);
-  }, [searchDigital]);
+    getDigitalProducts(digitalPage, 10, searchDigital);
+  }, [searchDigital, digitalPage]);
+
   useEffect(() => {
-    getPhysicalProducts(1, 10, searchPhysical);
+    getPhysicalProducts(physicalPage, 10, searchPhysical);
   }, [searchPhysical]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+    if (scrollTop >= scrollHeight - clientHeight && !isFetchingMore) {
+      setIsFetchingMore(true);
+      setDigitalPage((prevPage) => prevPage + 1);
+      setIsFetchingMore(false);
+    }
+  };
 
   return (
     <div className="hidden md:grid grid-cols-2">
       <h1 className="col-span-2 text-center text-2xl font-medium uppercase pt-[3vh]">
-        <MoveHorizontal stroke="#181818" strokeWidth={1.5} scale={4} />
         Map Products
       </h1>
-      <section className="flex flex-col items-center pt-[6vh]">
+      <section className="flex flex-col items-center pt-[6vh]" ref={sectionRef}>
         <h2 className="text-xl font-medium">Digital Products</h2>
         <Input
           className="max-w-[25rem] mt-[1vh]"
@@ -58,14 +74,17 @@ export default function Mapping() {
           onChange={(e) => setSearchDigital(e.target.value)}
         />
 
-        <ScrollArea className="h-[75vh] max-w-md overflow-y-auto border-0 mt-[2vh]">
+        <ScrollArea
+          className="h-[75vh] max-w-md overflow-y-auto border-0 mt-[2vh]"
+          onScroll={handleScroll}
+        >
           <div className="w-full px-4">
             {isDigitalProductsLoading ? (
               <div>Loading...</div>
             ) : (
               digitalProducts.map((digitalProduct: any) => (
                 <ProductPreview
-                  key={digitalProduct.sku}
+                  key={"digital" + digitalProduct.sku}
                   productInfo={{
                     sku: digitalProduct.sku,
                     name: digitalProduct.name,
@@ -94,7 +113,7 @@ export default function Mapping() {
               <h3 className="text-xl font-medium">Recomendation</h3>
 
               <ProductPreview
-                key={recomendation.sku}
+                key={"recomendation" + recomendation.sku}
                 productInfo={{
                   sku: recomendation.sku,
                   name: recomendation.name,
@@ -113,7 +132,7 @@ export default function Mapping() {
             ) : (
               physicalProducts.map((physicalProduct: any) => (
                 <ProductPreview
-                  key={physicalProduct.sku}
+                  key={"physical" + physicalProduct.sku}
                   productInfo={{
                     sku: physicalProduct.sku,
                     name: physicalProduct.name,

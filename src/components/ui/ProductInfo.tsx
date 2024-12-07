@@ -82,11 +82,11 @@ export default function ProductInfo({
           <div className="grid grid-cols-2 gap-x-10 gap-y-5 mb-10 mt-5">
             <div className="flex flex-col">
               <Label htmlFor="sku">SKU</Label>
-              <p>{product?.sku}</p>
+              <p className="font-mono">{product?.sku}</p>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="ean">EAN</Label>
-              <p>{product?.ean}</p>
+              <p className="font-mono">{product?.ean}</p>
             </div>
             <div className="flex flex-col">
               <Label htmlFor="color">Color</Label>
@@ -99,9 +99,7 @@ export default function ProductInfo({
           </div>
         )}
         <DialogFooter className="">
-          {edit ? (
-            <></>
-          ) : (
+          {edit ? null : (
             <div className="flex flex-row sm:justify-between w-full">
               <Button variant="outline" onClick={() => setEdit(true)}>
                 Edit

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const baseURL = "http://localhost:8080";
 
 export const useDigitalProduct = () => {
-  const [digitalProducts, setDigitalProducts] = useState<[]>([]);
+  const [digitalProducts, setDigitalProducts] = useState<any[]>([]);
   const [digitalProduct, setDigitalProduct] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -20,7 +20,8 @@ export const useDigitalProduct = () => {
         }&${"search=" + search}`
       );
       const data = await response.json();
-      setDigitalProducts(data.content);
+      if (page === 1) setDigitalProducts(data.content);
+      else setDigitalProducts((prev) => [...prev, ...data.content]);
       setIsLoading(false);
     } catch (error) {
       setError(error);

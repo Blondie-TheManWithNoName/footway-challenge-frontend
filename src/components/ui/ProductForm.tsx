@@ -161,7 +161,12 @@ export default function ProductForm({
             <FormItem>
               <FormLabel>SKU</FormLabel>
               <FormControl>
-                <Input disabled={true} {...field} />
+                <Input
+                  disabled={true}
+                  {...field}
+                  placeholder="ABC-123"
+                  className="font-mono"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -174,7 +179,11 @@ export default function ProductForm({
             <FormItem>
               <FormLabel>EAN</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="1234567890123" />
+                <Input
+                  {...field}
+                  placeholder="1234567890123"
+                  className="font-mono"
+                />
               </FormControl>
               <FormDescription>EAN is not required</FormDescription>
               <FormMessage />
