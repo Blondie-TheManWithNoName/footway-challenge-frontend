@@ -1,14 +1,14 @@
-import "./App.css";
-import { Input } from "@/components/ui/input";
-import ProductPreview from "./components/ui/ProductPreview";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { usePhysicalProduct } from "./hooks/usePhysicalProduct";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useMappingsContext } from "./contexts/MappingContext";
 import { useDigitalProduct } from "./hooks/useDigitalProduct";
+import { Link, useParams } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import ProductsSection from "./components/ui/ProductSection";
 export default function Mapping() {
   // Mapping Context
   const { userMapping } = useMappingsContext();
+  const { id } = useParams();
 
   const {
     physicalProducts,
@@ -22,7 +22,7 @@ export default function Mapping() {
   const {
     digitalProducts,
     isLoading: isDigitalProductsLoading,
-    getDigitalProducts,
+    getOrderDigitalProducts,
   } = useDigitalProduct();
 
   useEffect(() => {
@@ -31,122 +31,43 @@ export default function Mapping() {
     } else setRecomendation(undefined);
   }, [userMapping]);
 
-  const [searchDigital, setSearchDigital] = useState<string>("");
-  const [searchPhysical, setSearchPhysical] = useState<string>("");
-
-  const [digitalPage, setDigitalPage] = useState<number>(1);
-  const [physicalPage, setPhysicalPage] = useState<number>(1);
-
-  const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
-
-  const sectionRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    getDigitalProducts(digitalPage, 10, searchDigital);
-  }, [searchDigital, digitalPage]);
-
-  useEffect(() => {
-    getPhysicalProducts(physicalPage, 10, searchPhysical);
-  }, [searchPhysical]);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
-    if (scrollTop >= scrollHeight - clientHeight && !isFetchingMore) {
-      setIsFetchingMore(true);
-      setDigitalPage((prevPage) => prevPage + 1);
-      setIsFetchingMore(false);
-    }
-  };
-
   return (
-    <div className="hidden md:grid grid-cols-2">
-      <h1 className="col-span-2 text-center text-2xl font-medium uppercase pt-[3vh]">
-        Map Products
-      </h1>
-      <section className="flex flex-col items-center pt-[6vh]" ref={sectionRef}>
-        <h2 className="text-xl font-medium">Digital Products</h2>
-        <Input
-          className="max-w-[25rem] mt-[1vh]"
-          placeholder="Search"
-          value={searchDigital}
-          onChange={(e) => {
-            setSearchDigital(e.target.value);
-            setDigitalPage(1);
-          }}
-        />
-
-        <ScrollArea
-          className="h-[75vh] max-w-md overflow-y-auto border-0 mt-[2vh]"
-          onScroll={handleScroll}
+    <div className="md:grid grid-cols-2 w-full">
+      <div className="col-span-2 grid grid-cols-2 gap-x-10 px-10 w-full pt-16">
+        <h1 className="text-center text-xl col-span-2 font-medium uppercase">
+          Mapping Order #{id}
+        </h1>
+        <Link
+          to={`/orders/${id}`}
+          className="text-sm text-violet-800 flex flex-row items-center px-4 py-1 w-24 border-[1.5px] transition-colors border-violet-800 text-center hover:bg-violet-50 hover:text-violet-900"
         >
-          <div className="w-full px-4">
-            {isDigitalProductsLoading ? (
-              <div>Loading...</div>
-            ) : (
-              digitalProducts.map((digitalProduct: any) => (
-                <ProductPreview
-                  key={"digital" + digitalProduct.sku}
-                  productInfo={{
-                    sku: digitalProduct.sku,
-                    name: digitalProduct.name,
-                    ean: digitalProduct.ean,
-                    image: digitalProduct.image,
-                  }}
-                  digital={true}
-                />
-              ))
-            )}
-          </div>
-        </ScrollArea>
-      </section>
+          <ChevronLeft className="w-5" />
+          <p>Back</p>
+        </Link>
+      </div>
 
-      <section className="flex flex-col items-center pt-[6vh]">
-        <h2 className="text-xl font-medium">Physical Products</h2>
-        <Input
-          className="max-w-[25rem] mt-[1vh]"
-          placeholder="Search"
-          value={searchPhysical}
-          onChange={(e) => setSearchPhysical(e.target.value)}
-        />
-        {recomendation ? (
-          <>
-            <div className="max-w-sm mt-[2vh] border-2 border-transparent border-b-violet-800 p-4">
-              <h3 className="text-xl font-medium">Recomendation</h3>
+      <ProductsSection
+        digital={true}
+        products={digitalProducts}
+        isLoading={isDigitalProductsLoading}
+        getProducts={getOrderDigitalProducts}
+      />
 
-              <ProductPreview
-                key={"recomendation" + recomendation.sku}
-                productInfo={{
-                  sku: recomendation.sku,
-                  name: recomendation.name,
-                  ean: recomendation.ean,
-                  image: recomendation.image,
-                }}
-                digital={false}
-              />
-            </div>
-          </>
-        ) : null}
-        <ScrollArea className="h-[75vh] max-w-md overflow-y-auto border-0 mt-[2vh]">
-          <div className="w-full px-4">
-            {isPhysicalProductsLoading ? (
-              <div>Loading...</div>
-            ) : (
-              physicalProducts.map((physicalProduct: any) => (
-                <ProductPreview
-                  key={"physical" + physicalProduct.sku}
-                  productInfo={{
-                    sku: physicalProduct.sku,
-                    name: physicalProduct.name,
-                    ean: physicalProduct.ean,
-                    image: physicalProduct.image,
-                  }}
-                  digital={false}
-                />
-              ))
-            )}
-          </div>
-        </ScrollArea>
-      </section>
+      <ProductsSection
+        digital={false}
+        products={physicalProducts}
+        isLoading={isPhysicalProductsLoading}
+        getProducts={getPhysicalProducts}
+        recomendation={recomendation}
+      />
+
+      <Link
+        to={`/orders/${id}/checkout`}
+        className="text-sm text-white flex flex-row items-center px-4 py-1 max-w-40 border-[1.5px] transition-colors border-violet-800 text-center bg-violet-400 hover:bg-violet-100/90 hover:text-white absolute bottom-12 right-20"
+      >
+        <p>Check Out</p>
+        <ChevronRight className="w-5" />
+      </Link>
     </div>
   );
 }
