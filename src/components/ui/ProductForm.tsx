@@ -49,7 +49,7 @@ const formSchema = z.object({
     .refine((val) => val.length > 0, {
       message: "Description is required",
     }),
-  ean: z.string().min(13).max(13),
+  ean: z.string().min(13).max(13).optional(),
   sku: z.string().min(2).max(13),
   color: z.nativeEnum(ColorEnum, { message: "Invalid color" }),
   size: z.preprocess(
@@ -67,12 +67,13 @@ export default function ProductForm({
   product,
   setEdit,
   editProduct,
+  createProduct,
 }: {
-  product: any;
-  setEdit: any;
-  editProduct: any;
+  product?: any;
+  setEdit?: any;
+  editProduct?: any;
+  createProduct?: any;
 }) {
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -87,8 +88,14 @@ export default function ProductForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await editProduct(product.sku, values);
-    setEdit(false);
+    if (createProduct) {
+      if (await createProduct(values)) {
+        setEdit(false);
+      }
+    } else {
+      await editProduct(product.sku, values);
+      setEdit(false);
+    }
   }
   return (
     <Form {...form}>
@@ -162,7 +169,7 @@ export default function ProductForm({
               <FormLabel>SKU</FormLabel>
               <FormControl>
                 <Input
-                  disabled={true}
+                  disabled={!createProduct}
                   {...field}
                   placeholder="ABC-123"
                   className="font-mono"
@@ -264,7 +271,7 @@ export default function ProductForm({
             Cancel
           </Button>
           <Button variant="default" type="submit">
-            Save
+            {createProduct ? "Create" : "Save"}
           </Button>
         </div>
       </form>
