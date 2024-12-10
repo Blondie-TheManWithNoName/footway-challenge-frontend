@@ -1,54 +1,43 @@
-import "./App.css";
-
 import { MappingsProvider } from "./contexts/MappingContext";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
+
+import { Toaster } from "@/components/ui/sonner";
 
 import Mapping from "./Mapping";
 import Home from "./components/ui/Home";
+import DigitalProducts from "./components/ui/DigitalProducts";
+import Navigation from "./components/ui/Navigation";
+import Orders from "./components/ui/Orders";
+import Order from "./components/ui/Order";
+import CheckOut from "./components/ui/CheckOut";
+import Footer from "./components/ui/Footer";
+import PhysicalProducts from "./components/ui/PhysicalProducts";
 
 function App() {
   return (
     <MappingsProvider>
-      <main className="w-screen h-screen">
+      <main className="w-screen pl-[7vw] min-h-screen relative">
         <Router>
-          <nav>
-            <Link to="/">Home</Link> | <Link to="/mapping">Mapping</Link>
-          </nav>
+          <Navigation />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/mapping" element={<Mapping />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:id" element={<Order />} />
+            <Route path="/orders/:id/mapping" element={<Mapping />} />
+            <Route path="/orders/:id/checkout" element={<CheckOut />} />
+            <Route path="/digital-products" element={<DigitalProducts />} />
+            <Route path="/physical-products" element={<PhysicalProducts />} />
             {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
+          <Footer />
         </Router>
-        {/* <div className="md:hidden flex flex-col items-center w-full">
-          <Tabs defaultValue="account" className="max-w-xl w-full">
-            <TabsList className="w-full">
-              <TabsTrigger value="digital" className="w-full">
-                Digital Products
-              </TabsTrigger>
-              <TabsTrigger value="physical" className="w-full">
-                Physical Products
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="digital" className="flex flex-col items-center">
-              <h2 className="text-xl font-medium">Digital Products</h2>
-              <Input className="max-w-sm mt-8" placeholder="Search" />
-              <div className="max-w-[22rem] mt-8">
-                <ProductPreview />
-              </div>
-            </TabsContent>
-            <TabsContent
-              value="physical"
-              className="flex flex-col items-center"
-            >
-              <h2 className="text-xl font-medium">Physical Products</h2>
-              <Input className="max-w-sm mt-8" placeholder="Search" />
-              <div className="max-w-[22rem] mt-8">
-                <ProductPreview />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div> */}
+        <Toaster duration={2500} position="bottom-left" />
       </main>
     </MappingsProvider>
   );
