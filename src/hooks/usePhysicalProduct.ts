@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { set } from "zod";
 
 const baseURL = "http://localhost:8080";
 
 export const usePhysicalProduct = () => {
-  const [physicalProducts, setPhysicalProducts] = useState<[]>([]);
+  const [physicalProducts, setPhysicalProducts] = useState<any[]>([]);
   const [physicalProduct, setPhysicalProduct] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -22,7 +23,8 @@ export const usePhysicalProduct = () => {
         }&${"search=" + search}`
       );
       const data = await response.json();
-      setPhysicalProducts(data.content);
+      if (page === 1) setPhysicalProducts(data.content);
+      else setPhysicalProducts((prev) => [...prev, ...data.content]);
       setIsLoading(false);
     } catch (error) {
       setError(error);
@@ -42,15 +44,43 @@ export const usePhysicalProduct = () => {
 
   const getRecomendation = async (ean: string) => {
     try {
-      const response = await fetch(`${baseURL}/physical-products/ean/${ean}`);
+      const response = await fetch(
+        `${baseURL}/physical-products?${"ean=" + ean}`
+      );
       if (response.status === 200) {
         const data = await response.json();
-        setRecomendation(data);
+        if (data.content.length > 0) setRecomendation(data.content[0]);
+        else setRecomendation(undefined);
       }
     } catch (error) {
       setError(error);
     }
   };
+
+  const createPhysicalProdcut = async (data: Object) => {
+    try {
+      console.log("data", data);
+      const response = await fetch(`${baseURL}/physical-products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      if (response.ok) {
+        toast.success("Physical Product created successfully");
+        setPhysicalProducts((prev) => [...prev, responseData]);
+        return true;
+      } else {
+        toast.error("Error creating physical product: " + responseData.message);
+        return false;
+      }
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   const editPhysicalProduct = async (id: string, data: Object) => {
     try {
       const response = await fetch(`${baseURL}/physical-products/${id}`, {
@@ -67,6 +97,30 @@ export const usePhysicalProduct = () => {
     }
   };
 
+  const deletePhysicalProduct = async (sku: number) => {
+    try {
+      const response = await fetch(`${baseURL}/physical-products/${sku}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        toast.success("Physical Product deleted successfully");
+        setPhysicalProducts((prev) =>
+          prev.filter((product) => product.sku !== sku)
+        );
+        return true;
+      } else {
+        const responseData = await response.json();
+        toast.error("Error deleting physical product: " + responseData.message);
+        return false;
+      }
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   return {
     physicalProducts,
     physicalProduct,
@@ -78,5 +132,7 @@ export const usePhysicalProduct = () => {
     getPhysicalProduct,
     editPhysicalProduct,
     getRecomendation,
+    createPhysicalProdcut,
+    deletePhysicalProduct,
   };
 };
