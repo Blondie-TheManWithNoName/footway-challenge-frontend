@@ -44,7 +44,12 @@ export const useMappings = () => {
         body: JSON.stringify(data),
       });
       const responseData = await response.json();
-      return responseData.id;
+      if (response.ok) {
+        toast.success("Mapped successfully");
+        return responseData.id;
+      } else {
+        toast.error("Error creating mapping: " + responseData.message);
+      }
     } catch (error) {
       setError(error);
     }
@@ -58,7 +63,12 @@ export const useMappings = () => {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await response.json();
+
+      if (response.ok) {
+        toast.success("Unmapped successfully");
+      } else {
+        toast.error("Error unmapping");
+      }
     } catch (error) {
       setError(error);
     }
@@ -71,7 +81,6 @@ export const useMappings = () => {
     error,
     getMappings,
     getMapping,
-    editMapping,
     createMapping,
     deleteMapping,
   };
