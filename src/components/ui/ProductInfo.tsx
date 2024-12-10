@@ -33,11 +33,18 @@ export default function ProductInfo({
   product,
   getProduct,
   editProduct,
+  deleteProduct,
 }: any) {
   const [edit, setEdit] = React.useState(false);
+  const [open, setOpen] = useState(false);
+
+  const handleDelete = async () => {
+    const res = await deleteProduct(sku);
+    if (res) setOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="w-full h-full">
           <TooltipProvider delayDuration={50}>
@@ -100,7 +107,10 @@ export default function ProductInfo({
         )}
         <DialogFooter className="">
           {edit ? null : (
-            <div className="flex flex-row sm:justify-between w-full">
+            <div className="flex flex-row justify-between w-full">
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
               <Button variant="outline" onClick={() => setEdit(true)}>
                 Edit
               </Button>

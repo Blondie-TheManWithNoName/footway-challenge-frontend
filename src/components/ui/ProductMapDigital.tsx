@@ -5,12 +5,15 @@ import { Button } from "./button";
 // Context
 import { useMappingsContext } from "@/contexts/MappingContext";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function ProductMapDigital({ sku, ean, setColor }: any) {
   const { userMapping, getMappings, setUserMapping } = useMappingsContext();
 
+  const { id: orderId } = useParams();
+
   async function handleMapClick() {
-    await getMappings(sku);
+    await getMappings({ sku, orderId: Number(orderId) });
     setUserMapping(userMapping ? undefined : { sku: sku, ean: ean });
   }
 

@@ -5,11 +5,13 @@ import { Check, X } from "lucide-react";
 import { Button } from "./button";
 // Context
 import { useMappingsContext } from "@/contexts/MappingContext";
+import { useParams } from "react-router-dom";
 
 export default function ProductMapPhysical({ sku, setColor }: any) {
   const [mappedId, setMappedId] = useState<number>(0);
   const { userMapping, mappings, deleteMapping, createMapping } =
     useMappingsContext();
+  const { id: orderId } = useParams();
 
   useEffect(() => {
     if (!userMapping) setMappedId(0);
@@ -39,6 +41,7 @@ export default function ProductMapPhysical({ sku, setColor }: any) {
         const id = await createMapping({
           physicalProductSku: sku,
           digitalProductSku: userMapping.sku,
+          order: Number(orderId),
         });
         setMappedId(id);
       }
