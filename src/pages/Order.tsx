@@ -1,8 +1,9 @@
-import { useOrders } from "@/hooks/useOrders";
-import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import ProductPreview from "./ProductPreview";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+
+import ProductPreview from "@/components/products/ProductPreview";
+import { useEffect } from "react";
+import { useOrders } from "@/hooks/useOrders";
 
 export default function Order() {
   const { getOrder, order } = useOrders();

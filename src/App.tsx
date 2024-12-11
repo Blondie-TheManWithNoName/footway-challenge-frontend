@@ -9,15 +9,15 @@ import {
 
 import { Toaster } from "@/components/ui/sonner";
 
-import Mapping from "./Mapping";
-import Home from "./components/ui/Home";
-import DigitalProducts from "./components/ui/DigitalProducts";
-import Navigation from "./components/ui/Navigation";
-import Orders from "./components/ui/Orders";
-import Order from "./components/ui/Order";
-import CheckOut from "./components/ui/CheckOut";
-import Footer from "./components/ui/Footer";
-import PhysicalProducts from "./components/ui/PhysicalProducts";
+import Mapping from "./pages/Mapping";
+import Home from "./pages/Home";
+import DigitalProducts from "./pages/DigitalProducts";
+import Navigation from "./components/layout/Navigation";
+import Orders from "./pages/Orders";
+import Order from "./pages/Order";
+import CheckOut from "./pages/CheckOut";
+import Footer from "./components/layout/Footer";
+import PhysicalProducts from "./pages/PhysicalProducts";
 
 function App() {
   return (

@@ -1,7 +1,8 @@
-import { useMappings } from "@/hooks/useMappings";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+
+import { useEffect } from "react";
+import { useMappings } from "@/hooks/useMappings";
 
 export default function CheckOut() {
   const { getMappings, mappings, isLoading } = useMappings();

@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
-// prettier-ignore
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Check, X } from "lucide-react";
-import { Button } from "./button";
-// Context
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useEffect, useState } from "react";
+
+import { Button } from "../ui/button";
 import { useMappingsContext } from "@/contexts/MappingContext";
 import { useParams } from "react-router-dom";
 

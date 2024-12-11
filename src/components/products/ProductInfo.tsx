@@ -1,22 +1,3 @@
-import React, { useEffect, useState } from "react";
-import {
-  Cable,
-  Check,
-  ChevronsLeftRightEllipsis,
-  Info,
-  MoveHorizontal,
-  X,
-} from "lucide-react";
-import { Label } from "@/components/ui/label";
-
-import { Button } from "./button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
 import {
   Dialog,
   DialogContent,
@@ -26,8 +7,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import React, { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-import ProductForm from "./ProductForm";
+import { Button } from "../ui/button";
+import { Info } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import ProductForm from "../forms/ProductForm";
+
 export default function ProductInfo({
   sku,
   product,

@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import OrderPreview from "./OrderPreview";
-import { useOrders } from "@/hooks/useOrders";
-import { Button } from "./button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./dialog";
-import OrderForm from "./OrderForm";
+} from "../components/ui/dialog";
+import React, { useEffect, useState } from "react";
+
+import { Button } from "../components/ui/button";
+import OrderForm from "../components/forms/OrderForm";
+import OrderPreview from "../components/orders/OrderPreview";
+import { useOrders } from "@/hooks/useOrders";
 
 export default function Orders() {
   const { orders, getOrders, isLoading } = useOrders();

@@ -1,38 +1,39 @@
-import { useDigitalProduct } from "@/hooks/useDigitalProduct";
-import ProductPreview from "./ProductPreview";
-import { Input } from "./input";
-import { usePagination } from "@/hooks/usePagination";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./dialog";
-import OrderForm from "./OrderForm";
-import { Button } from "./button";
-import ProductForm from "./ProductForm";
-import { useEffect, useState } from "react";
+} from "../components/ui/dialog";
 
-export default function DigitalProducts() {
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import ProductForm from "../components/forms/ProductForm";
+import ProductPreview from "@/components/products/ProductPreview";
+import { usePagination } from "@/hooks/usePagination";
+import { usePhysicalProduct } from "@/hooks/usePhysicalProduct";
+import { useState } from "react";
+
+export default function PhysicalProducts() {
   const {
-    digitalProducts,
-    getDigitalProducts,
+    physicalProducts,
+    getPhysicalProducts,
     isLoading,
-    createDigitalProdcut,
-  } = useDigitalProduct();
+    createPhysicalProdcut,
+  } = usePhysicalProduct();
 
   const { handleScroll, setSearch, search, setPage } = usePagination({
     id: undefined,
     digital: true,
-    getProducts: getDigitalProducts,
+    getProducts: getPhysicalProducts,
     take: 20,
   });
 
   // Handle scroll event
-  const onScroll = (e: React.UIEvent<HTMLElement>) => {
+  const onScroll = (e: any) => {
     handleScroll(e);
   };
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -42,29 +43,30 @@ export default function DigitalProducts() {
     >
       <div className=" gap-x-10 px-20 w-full flex flex-col pt-16">
         <h1 className="text-center text-xl col-span-2 font-medium uppercase">
-          Digital Products
+          Physical Products
         </h1>
         <div className="flex flex-col gap-y-3 justify-end items-end">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant={"outline"} className="px-4 py-1 max-w-40">
-                Create Digital Product
+              <Button variant={"outline"} className="px-4 py-1 max-w-44">
+                Create Pyhsical Product
               </Button>
             </DialogTrigger>
             <DialogContent className="p-8 px-12">
               <DialogHeader className="space-y-4">
                 <DialogTitle className="text-xl font-medium flex flex-row justify-between pr-10 mt-2">
-                  Create Digital Prodcut
+                  Create Physical Prodcut
                 </DialogTitle>
               </DialogHeader>
               <ProductForm
-                createProduct={createDigitalProdcut}
+                createProduct={createPhysicalProdcut}
                 setEdit={setOpen}
               />
             </DialogContent>
           </Dialog>
         </div>
       </div>
+
       <div className="flex flex-col max-w-[22rem] w-full mt-[1vh] items-center gap-x-2 relative">
         <p className="text-xs text-violet-800 text-left w-full ml-3">
           Search for a name or description
@@ -82,16 +84,16 @@ export default function DigitalProducts() {
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          digitalProducts.map((digitalProduct: any) => (
+          physicalProducts.map((physicalProduct: any) => (
             <ProductPreview
-              key={"digital" + digitalProduct.sku}
+              key={"physical" + physicalProduct.sku}
               productInfo={{
-                sku: digitalProduct.sku,
-                name: digitalProduct.name,
-                ean: digitalProduct.ean,
-                image: digitalProduct.image,
+                sku: physicalProduct.sku,
+                name: physicalProduct.name,
+                ean: physicalProduct.ean,
+                image: physicalProduct.image,
               }}
-              digital={true}
+              digital={false}
               map={false}
             />
           ))

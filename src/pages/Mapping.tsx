@@ -1,10 +1,10 @@
-import { usePhysicalProduct } from "./hooks/usePhysicalProduct";
+import { usePhysicalProduct } from "../hooks/usePhysicalProduct";
 import { useEffect } from "react";
-import { useMappingsContext } from "./contexts/MappingContext";
-import { useDigitalProduct } from "./hooks/useDigitalProduct";
+import { useMappingsContext } from "../contexts/MappingContext";
+import { useDigitalProduct } from "../hooks/useDigitalProduct";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ProductsSection from "./components/ui/ProductSection";
+import ProductsSection from "@/components/products/ProductSection";
 export default function Mapping() {
   // Mapping Context
   const { userMapping } = useMappingsContext();

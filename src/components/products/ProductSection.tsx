@@ -1,9 +1,8 @@
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import React, { useEffect, useRef, useState } from "react";
-import { Input } from "./input";
+import { Input } from "../ui/input";
 import ProductPreview from "./ProductPreview";
-import { useParams } from "react-router-dom";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { usePagination } from "@/hooks/usePagination";
+import { useParams } from "react-router-dom";
 
 export default function ProductsSection({
   digital,

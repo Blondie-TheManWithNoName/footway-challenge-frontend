@@ -1,11 +1,14 @@
 // prettier-ignore
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+import { Button } from "../ui/button";
 import { MoveHorizontal } from "lucide-react";
-import { Button } from "./button";
-// Context
-import { useMappingsContext } from "@/contexts/MappingContext";
 import { useEffect } from "react";
+import { useMappingsContext } from "@/contexts/MappingContext";
 import { useParams } from "react-router-dom";
+
+// Context
 
 export default function ProductMapDigital({ sku, ean, setColor }: any) {
   const { userMapping, getMappings, setUserMapping } = useMappingsContext();
